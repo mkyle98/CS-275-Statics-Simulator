@@ -1,2 +1,1 @@
-include ':app'
-rootProject.name='CS 275 Statics Simulator'
+include ':StaticsEngine'
