@@ -8,6 +8,8 @@ public class MainActivity extends Activity {
 
     private CanvasView customCanvas;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,5 +21,6 @@ public class MainActivity extends Activity {
     public void clearCanvas(View v) {
         customCanvas.clearCanvas();
     }
+
 
 }
