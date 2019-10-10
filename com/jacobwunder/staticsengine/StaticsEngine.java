@@ -12,6 +12,11 @@ public class StaticsEngine {
     private static double force;
     private static double elasticity;
     private static double inertia;
+    
+    private static double ulength;
+    private static double uload;
+    private static double uelast;
+    private static double uinertia;
 
 
 
@@ -20,9 +25,17 @@ public class StaticsEngine {
         force = 20;
         elasticity = 4.92;
         inertia = 12.3;
+        
+        ulength=10;
+        uload=10;
+        uelast = 5;
+        uinertia=12;
 
         System.out.println(simulateElastic(force, length, elasticity, inertia, 15));
         System.out.println(simulateAngle(force, length, elasticity, inertia, 15));
+        
+        System.out.println(uniformElastic(uload, ulength, uelast, uinertia, 15));
+        System.out.println(uniformAngle(uload, ulength, uelast, uinertia, 15));
 
     }
 
@@ -49,6 +62,22 @@ public class StaticsEngine {
         double angle;
         double poiLength = (2 * length) - poi;
         double formula = (force * (poi)) / (2 * elasticity * inertia);
+        angle = formula * poiLength;
+        return angle;
+    }
+    
+    static double uniformElastic(double uload, double ulength, double uelast, double uinertia, double poi) {
+        double deflection;
+        double poiLength = (6 * (Math.pow(ulength, 2)) - 4 * ulength * poi + (Math.pow(poi, 2)));
+        double formula = (uload * (Math.pow(poi, 2))) / (24 * uelast * uinertia);
+        deflection = formula * poiLength;
+        return deflection;
+    }
+
+    static double uniformAngle(double uload, double ulength, double uelast, double uinertia, double poi){
+        double angle;
+        double poiLength = (3 * (Math.pow(ulength, 2)) - 3 * ulength * poi + (Math.pow(poi, 2)));
+        double formula = (uload * poi) / (6 * uelast * uinertia);
         angle = formula * poiLength;
         return angle;
     }
