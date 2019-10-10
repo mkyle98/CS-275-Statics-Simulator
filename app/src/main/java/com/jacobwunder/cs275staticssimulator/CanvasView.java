@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.Arrays;
+
 public class CanvasView extends View {
 
     public int width;
@@ -25,9 +27,9 @@ public class CanvasView extends View {
     private float mX, mY;
     private static final float TOLERANCE = 5;
 
-    private static final int WIDTH = 2;
-    private static final int HEIGHT = 2;
-    private static final int COUNT = (WIDTH + 1) * (HEIGHT + 1);
+    private static final int WIDTH = 3;
+    private static final int HEIGHT = 3;
+    private static final int COUNT = WIDTH * HEIGHT;
     private float[] mVerts = new float[COUNT*2];
 
     public CanvasView(Context c, AttributeSet attrs) {
@@ -74,64 +76,31 @@ public class CanvasView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        //SOME TESTS
-        /*
-        canvas.drawRect(50, 150,150,120, mPaint);
-        canvas.drawBitmap(testBitmap, 60,100,null);
-
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(40);
-        canvas.drawText("HELLO", 500, 500, paint);
-        */
-
         // draw the mPath with the mPaint on the canvas when onDraw
         canvas.drawPath(mPath, mPaint);
 
         //DEFINE VERTICES---------------------------------
-        int x1= 40;
-        int x2= 520;
-        int x3= 1040;
-        int y1=800;
-        int y2=900;
-        int y3=1000;
+        float minX = 40;
+        float minY = 800;
+        float maxX = 1200;
+        float maxY = 100;
 
-        //ROW 1
-        mVerts[0]= x1;     //x0    1
-        mVerts[1]= y1;     //y0    2
-        mVerts[2]= x2;     //x1    3
-        mVerts[3]= y1;     //y1    4
-        mVerts[4]= x3;     //x2    5
-        mVerts[5]= y1;     //y2    6
-        //ROW 2
-        mVerts[6]= x1;     //x3    7
-        mVerts[7]= y2;     //y3    8
-        mVerts[8]= x2;     //x4    9
-        mVerts[9]= y2;     //y4    10
-        mVerts[10]= x3;     //x5    11
-        mVerts[11]= y2;     //y5    12
-        //ROW 3
-        mVerts[12]= x1;     //x6    13
-        mVerts[13]= y3;     //y6    14
-        mVerts[14]= x2;     //x7    15
-        mVerts[15]= y3;     //y7    16
-        mVerts[16]= x3;     //x8    17
-        mVerts[17]= y3;     //y8    18
+        for (int i = 0; i < HEIGHT; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                mVerts[i * 2 * HEIGHT + (2 * j)    ] = maxX / WIDTH * j + minX;
+                mVerts[i * 2 * HEIGHT + (2 * j) + 1] = maxY / HEIGHT * i + minY;
+            }
+        }
+
+        System.out.println(Arrays.toString(mVerts));
 
         //DRAW BITMAP MESH---------------------------------
-        canvas.drawBitmapMesh(testBitmap, WIDTH,HEIGHT, mVerts,0, null,0,mPaint);
+        canvas.drawBitmapMesh(testBitmap, WIDTH - 1,HEIGHT - 1, mVerts,0, null,0,mPaint);
 
         //DRAW POINTS--------------------------------------
-        canvas.drawPoint(x1,y1,pPaint);
-        canvas.drawPoint(x2,y1,pPaint);
-        canvas.drawPoint(x3,y1,pPaint);
-        canvas.drawPoint(x1,y2,pPaint);
-        canvas.drawPoint(x2,y2,pPaint);
-        canvas.drawPoint(x3,y2,pPaint);
-        canvas.drawPoint(x1,y3,pPaint);
-        canvas.drawPoint(x2,y3,pPaint);
-        canvas.drawPoint(x3,y3,pPaint);
-
+        for (int i = 0; i < mVerts.length; i += 2) {
+            canvas.drawPoint(mVerts[i], mVerts[i + 1], pPaint);
+        }
     }
 
     // when ACTION_DOWN start touch according to the x,y values
