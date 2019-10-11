@@ -15,6 +15,7 @@ import java.util.Arrays;
 
 public class CanvasView extends View {
 
+    private float t;
     public int width;
     public int height;
     private Bitmap mBitmap;
@@ -27,9 +28,10 @@ public class CanvasView extends View {
     private float mX, mY;
     private static final float TOLERANCE = 5;
 
-    private static final int WIDTH = 3;
-    private static final int HEIGHT = 3;
-    private static final int COUNT = WIDTH * HEIGHT;
+    private static final int WIDTH = 15;
+    private static final int HEIGHT = 15;
+    private static final int COUNT = (WIDTH) * (HEIGHT);
+//    private static final int COUNT = (WIDTH + 1) * (HEIGHT + 1);
     private float[] mVerts = new float[COUNT*2];
 
     public CanvasView(Context c, AttributeSet attrs) {
@@ -71,36 +73,64 @@ public class CanvasView extends View {
 //        mCanvas = new Canvas(mBitmap);
     }
 
-    // override onDraw
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        // draw the mPath with the mPaint on the canvas when onDraw
-        canvas.drawPath(mPath, mPaint);
+    public void drawMesh(Canvas canvas) {
 
         //DEFINE VERTICES---------------------------------
         float minX = 40;
         float minY = 800;
-        float maxX = 1200;
-        float maxY = 100;
+        float sizeX = 1000;
+        float sizeY = 400;
 
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                mVerts[i * 2 * HEIGHT + (2 * j)    ] = maxX / WIDTH * j + minX;
-                mVerts[i * 2 * HEIGHT + (2 * j) + 1] = maxY / HEIGHT * i + minY;
+                System.out.println(i + ", " + j);
+                System.out.println(i * 2 * HEIGHT + (2 * j));
+                System.out.println(i * 2 * HEIGHT + (2 * j) + 1);
+
+                mVerts[i * 2 * HEIGHT + (2 * j)    ] = sizeX / (WIDTH - 1)  * j + minX;
+                mVerts[i * 2 * HEIGHT + (2 * j) + 1] = sizeY / (HEIGHT - 1) * i + minY;
+
+                mVerts[i * 2 * HEIGHT + (2 * j) + 1] +=
+                    Math.sin((float) j / (float) WIDTH * 2 * Math.PI + t) * 100;
             }
         }
 
         System.out.println(Arrays.toString(mVerts));
 
-        //DRAW BITMAP MESH---------------------------------
-        canvas.drawBitmapMesh(testBitmap, WIDTH - 1,HEIGHT - 1, mVerts,0, null,0,mPaint);
+        canvas.drawBitmapMesh(
+            testBitmap,
+            WIDTH - 1,
+            HEIGHT - 1,
+            mVerts,
+            0,
+            null,
+            0,
+            mPaint
+        );
+    }
+
+    private void tick() {
+        t += .5;
+        t %= Math.PI * 2;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        tick();
+
+        // draw the mPath with the mPaint on the canvas when onDraw
+        canvas.drawPath(mPath, mPaint);
+
+        drawMesh(canvas);
 
         //DRAW POINTS--------------------------------------
         for (int i = 0; i < mVerts.length; i += 2) {
             canvas.drawPoint(mVerts[i], mVerts[i + 1], pPaint);
         }
+
+        invalidate();
     }
 
     // when ACTION_DOWN start touch according to the x,y values
