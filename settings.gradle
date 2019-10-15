@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':libstatics'
 rootProject.name='CS 275 Statics Simulator'
