@@ -31,7 +31,6 @@ public class CanvasView extends View {
     private static final int WIDTH = 15;
     private static final int HEIGHT = 15;
     private static final int COUNT = (WIDTH) * (HEIGHT);
-//    private static final int COUNT = (WIDTH + 1) * (HEIGHT + 1);
     private float[] mVerts = new float[COUNT*2];
 
     public CanvasView(Context c, AttributeSet attrs) {
@@ -67,10 +66,6 @@ public class CanvasView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
-//        // your Canvas will draw onto the defined Bitmap
-//        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-//        mCanvas = new Canvas(mBitmap);
     }
 
     public void drawMesh(Canvas canvas) {
@@ -130,7 +125,8 @@ public class CanvasView extends View {
             canvas.drawPoint(mVerts[i], mVerts[i + 1], pPaint);
         }
 
-        invalidate();
+        // Jank Refresh:
+        // invalidate();
     }
 
     // when ACTION_DOWN start touch according to the x,y values
