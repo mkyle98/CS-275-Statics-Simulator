@@ -27,7 +27,7 @@ public class Beam {
         }
 
         for (int i = 0; i < mesh.length; i++) {
-            mesh[i] = new Point(0.0, 0.0, length / i);
+            mesh[i] = new Point(0.0, 0.0, length / POINT_COUNT * i);
         }
     }
 
