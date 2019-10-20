@@ -29,15 +29,15 @@ public abstract class SinglePointCantileverSituation extends SimulatorSituation 
         return beam;
     }
 
-    static double simulateElastic(Beam beam, double poi, Force force) {
+    private static double simulateElastic(Beam beam, double poi, Force force) {
         return simulateElastic(force.getMagnitude(), beam.getLength(), beam.getElasticity(), beam.getInertia(), poi);
     }
 
-    static double simulateAngle(Beam beam, double poi, Force force) {
+    private static double simulateAngle(Beam beam, double poi, Force force) {
         return simulateAngle(force.getMagnitude(), beam.getLength(), beam.getElasticity(), beam.getInertia(), poi);
     }
 
-    static double simulateElastic(double force, double length, double elasticity, double inertia, double poi) {
+    private static double simulateElastic(double force, double length, double elasticity, double inertia, double poi) {
         double deflection;
         double poiLength = (3 * length) - poi;
         double formula = (force * (Math.pow(poi, 2))) / (6 * elasticity * inertia);
@@ -45,7 +45,7 @@ public abstract class SinglePointCantileverSituation extends SimulatorSituation 
         return deflection;
     }
 
-    static double simulateAngle(double force, double length, double elasticity, double inertia, double poi){
+    private static double simulateAngle(double force, double length, double elasticity, double inertia, double poi){
         double angle;
         double poiLength = (2 * length) - poi;
         double formula = (force * (poi)) / (2 * elasticity * inertia);
