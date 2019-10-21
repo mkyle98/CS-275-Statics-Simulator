@@ -7,16 +7,16 @@ import com.jacobwunder.libstatics.Point;
 
 import java.util.function.Function;
 
-public abstract class SinglePointCantileverSituation extends SimulatorSituation {
+public class SinglePointCantileverSituation extends SimulatorSituation {
     @Override
     public void simulate() {
 
     }
 
     @Override
-    public Beam updateParameters(Beam beam, Force force, double poi){
-        double angle = simulateAngle(beam, poi ,force);
-        final double elastic = simulateElastic(beam, poi, force);
+    public Beam updateParameters(Beam beam, Force force){
+        double angle = simulateAngle(beam, force);
+        final double elastic = simulateElastic(beam, force);
 
         beam.meshApply(new Function<Point, Void>() {
             @Override
@@ -29,12 +29,12 @@ public abstract class SinglePointCantileverSituation extends SimulatorSituation 
         return beam;
     }
 
-    private static double simulateElastic(Beam beam, double poi, Force force) {
-        return simulateElastic(force.getMagnitude(), beam.getLength(), beam.getElasticity(), beam.getInertia(), poi);
+    private static double simulateElastic(Beam beam, Force force) {
+        return simulateElastic(force.getMagnitude(), beam.getLength(), beam.getElasticity(), beam.getInertia(), force.getLocation().getX());
     }
 
-    private static double simulateAngle(Beam beam, double poi, Force force) {
-        return simulateAngle(force.getMagnitude(), beam.getLength(), beam.getElasticity(), beam.getInertia(), poi);
+    private static double simulateAngle(Beam beam, Force force) {
+        return simulateAngle(force.getMagnitude(), beam.getLength(), beam.getElasticity(), beam.getInertia(), force.getLocation().getX());
     }
 
     private static double simulateElastic(double force, double length, double elasticity, double inertia, double poi) {

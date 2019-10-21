@@ -15,6 +15,6 @@ For the abstract, a ticking function, and something to update parameters.
  */
     abstract public void simulate();
 
-    abstract public Beam updateParameters(Beam beam, Force force, double poi);
+    abstract public Beam updateParameters(Beam beam, Force force);
 
 }
