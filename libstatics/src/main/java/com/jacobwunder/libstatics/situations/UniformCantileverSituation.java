@@ -11,7 +11,7 @@ public class UniformCantileverSituation extends SimulatorSituation {
     }
 
     @Override
-    public Beam updateParameters(Beam beam, Force force, double poi){
+    public Beam updateParameters(Beam beam, Force force){
 
         return beam;
 

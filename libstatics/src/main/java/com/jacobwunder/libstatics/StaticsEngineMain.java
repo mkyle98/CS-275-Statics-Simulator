@@ -11,16 +11,19 @@ public class StaticsEngineMain {
         Beam beam = new Beam(Beam.Material.Default, 20);
         Point point = new Point(15, 0, 0);
         Force force = new Force(20, 0 , point);
+        SinglePointCantileverSituation situation = new SinglePointCantileverSituation();
+        System.out.println(beam.getMesh());
+        situation.updateParameters(beam, force);
         System.out.println(beam.getMesh());
 
-
-        double length = 20;
-        double elasticity = 4.92;
-        double inertia = 12.3;
-        double force1 = 20;
-
-        System.out.println(simulateElastic(force1, length, elasticity, inertia, 15));
-        System.out.println(simulateAngle(force1, length, elasticity, inertia, 15));
+//
+//        double length = 20;
+//        double elasticity = 4.92;
+//        double inertia = 12.3;
+//        double force1 = 20;
+//
+//        System.out.println(simulateElastic(force1, length, elasticity, inertia, 15));
+//        System.out.println(simulateAngle(force1, length, elasticity, inertia, 15));
 
 //
 //        final Beam beam = new Beam(Beam.Material.Default, length);
