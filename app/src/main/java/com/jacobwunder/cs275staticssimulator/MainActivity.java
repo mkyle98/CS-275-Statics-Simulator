@@ -4,23 +4,30 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.jacobwunder.cs275staticssimulator.threading.SimulatorClient;
+
 public class MainActivity extends Activity {
 
-    private CanvasView customCanvas;
-
-
+    private CanvasView mCustomCanvas;
+    private SimulatorClient mSimulatorClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        customCanvas = (CanvasView) findViewById(R.id.signature_canvas);
+        mCustomCanvas = findViewById(R.id.signature_canvas);
+        mSimulatorClient = new SimulatorClient();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSimulatorClient.onDestroy();
     }
 
     public void clearCanvas(View v) {
-        customCanvas.clearCanvas();
+        mCustomCanvas.clearCanvas();
     }
-
 
 }

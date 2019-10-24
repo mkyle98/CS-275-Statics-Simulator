@@ -112,6 +112,11 @@ public class CanvasView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
 
         tick();
 
@@ -126,7 +131,7 @@ public class CanvasView extends View {
         }
 
         // Jank Refresh:
-        // invalidate();
+        invalidate();
     }
 
     // when ACTION_DOWN start touch according to the x,y values
