@@ -188,15 +188,12 @@ public class CanvasView extends View {
         return true;
     }
 
-    public void setForceArrowLocation(int location) {
-        forceArrowLocation = location;
-    }
+    public void setForceArrowLocation(int location){forceArrowLocation = location;}
 
-    public void setForceArrowAmount(int newtons){
-        forceArrowAmount = newtons;
-    }
+    public void setForceArrowAmount(int newtons){forceArrowAmount = newtons;}
 
     public int getForceArrowLocation () { return forceArrowLocation;}
 
     public int getForceArrowAmount () { return forceArrowAmount;}
+
 }
