@@ -6,9 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:custom="http://schemas.android.com/apk/res-auto"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <FrameLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
@@ -27,6 +26,15 @@
             android:layout_gravity="bottom|center"
             android:onClick="clearCanvas"
             android:text="Clear Canvas" />
+
+        <ImageView
+            android:id="@+id/forceArrow"
+            android:layout_width="29dp"
+            android:layout_height="115dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="80dp"
+            android:clickable="true"
+            android:src="@drawable/arrow" />
 
     </FrameLayout>
 

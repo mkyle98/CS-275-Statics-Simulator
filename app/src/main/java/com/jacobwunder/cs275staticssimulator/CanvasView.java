@@ -11,8 +11,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.Arrays;
-
 public class CanvasView extends View {
 
     private float t;
@@ -20,6 +18,7 @@ public class CanvasView extends View {
     public int height;
     private Bitmap mBitmap;
     private Bitmap testBitmap;
+    private Bitmap arrowBitmap;
     private Canvas mCanvas;
     private Path mPath;
     Context context;
@@ -32,6 +31,8 @@ public class CanvasView extends View {
     private static final int HEIGHT = 15;
     private static final int COUNT = (WIDTH) * (HEIGHT);
     private float[] mVerts = new float[COUNT*2];
+
+    private int XLOCATION = 720;
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
@@ -56,10 +57,9 @@ public class CanvasView extends View {
         pPaint.setStrokeJoin(Paint.Join.ROUND);
         pPaint.setStrokeWidth(15f);
 
-        //define our bitmap
+        //define beam bitmap
         testBitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.beamp);
-
     }
 
     // override onSizeChanged
@@ -78,9 +78,9 @@ public class CanvasView extends View {
 
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                System.out.println(i + ", " + j);
-                System.out.println(i * 2 * HEIGHT + (2 * j));
-                System.out.println(i * 2 * HEIGHT + (2 * j) + 1);
+//                System.out.println(i + ", " + j);
+//                System.out.println(i * 2 * HEIGHT + (2 * j));
+//                System.out.println(i * 2 * HEIGHT + (2 * j) + 1);
 
                 mVerts[i * 2 * HEIGHT + (2 * j)    ] = sizeX / (WIDTH - 1)  * j + minX;
                 mVerts[i * 2 * HEIGHT + (2 * j) + 1] = sizeY / (HEIGHT - 1) * i + minY;
@@ -90,7 +90,7 @@ public class CanvasView extends View {
             }
         }
 
-        System.out.println(Arrays.toString(mVerts));
+//        System.out.println(Arrays.toString(mVerts));
 
         canvas.drawBitmapMesh(
             testBitmap,
@@ -119,14 +119,21 @@ public class CanvasView extends View {
         canvas.drawPath(mPath, mPaint);
 
         drawMesh(canvas);
+        mPaint.setTextSize(50);
+        canvas.drawText("X location:"+ XLOCATION, 50, 50, mPaint);
 
         //DRAW POINTS--------------------------------------
         for (int i = 0; i < mVerts.length; i += 2) {
             canvas.drawPoint(mVerts[i], mVerts[i + 1], pPaint);
         }
 
+//        mPaint.setTextSize(50);
+//        canvas.drawText("hello", 150, 150, mPaint);
+
+
+
         // Jank Refresh:
-        // invalidate();
+        invalidate();
     }
 
     // when ACTION_DOWN start touch according to the x,y values
@@ -178,5 +185,10 @@ public class CanvasView extends View {
                 break;
         }
         return true;
+    }
+
+    public void test(int forceX){
+        System.out.println("Force X Location:" + forceX);
+        XLOCATION = forceX;
     }
 }
