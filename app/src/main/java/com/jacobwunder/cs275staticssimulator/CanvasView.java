@@ -1,5 +1,6 @@
 package com.jacobwunder.cs275staticssimulator;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +11,9 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 public class CanvasView extends View {
 
@@ -32,7 +36,8 @@ public class CanvasView extends View {
     private static final int COUNT = (WIDTH) * (HEIGHT);
     private float[] mVerts = new float[COUNT*2];
 
-    private int XLOCATION = 720;
+    private int forceArrowLocation;
+    private int forceArrowAmount;
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
@@ -120,17 +125,13 @@ public class CanvasView extends View {
 
         drawMesh(canvas);
         mPaint.setTextSize(50);
-        canvas.drawText("X location:"+ XLOCATION, 50, 50, mPaint);
+        canvas.drawText("Location: "+ getForceArrowLocation(), 50, 50, mPaint);
+        canvas.drawText("Force: "+ getForceArrowAmount()+"N", 50, 150, mPaint);
 
         //DRAW POINTS--------------------------------------
         for (int i = 0; i < mVerts.length; i += 2) {
             canvas.drawPoint(mVerts[i], mVerts[i + 1], pPaint);
         }
-
-//        mPaint.setTextSize(50);
-//        canvas.drawText("hello", 150, 150, mPaint);
-
-
 
         // Jank Refresh:
         invalidate();
@@ -187,8 +188,15 @@ public class CanvasView extends View {
         return true;
     }
 
-    public void test(int forceX){
-        System.out.println("Force X Location:" + forceX);
-        XLOCATION = forceX;
+    public void setForceArrowLocation(int location) {
+        forceArrowLocation = location;
     }
+
+    public void setForceArrowAmount(int newtons){
+        forceArrowAmount = newtons;
+    }
+
+    public int getForceArrowLocation () { return forceArrowLocation;}
+
+    public int getForceArrowAmount () { return forceArrowAmount;}
 }

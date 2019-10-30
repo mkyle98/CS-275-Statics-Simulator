@@ -14,12 +14,11 @@ import android.widget.ImageView;
 public class MainActivity extends Activity {
 
     private CanvasView customCanvas;
-
     private ViewGroup mainLayout;
     private ImageView image;
     private int xDelta;
-    //private int yDelta;
-    public int forceX = 0;
+    private int forceLocation = 720;
+    private int forceAmount = 50;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +27,12 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         customCanvas = (CanvasView) findViewById(R.id.signature_canvas);
-
         mainLayout = (FrameLayout) findViewById(R.id.main);
         image = (ImageView) findViewById(R.id.forceArrow);
         image.setOnTouchListener(onTouchListener());
+
+        customCanvas.setForceArrowAmount(forceAmount);
+        customCanvas.setForceArrowLocation(forceLocation);
     }
 
     private OnTouchListener onTouchListener() {
@@ -42,11 +43,9 @@ public class MainActivity extends Activity {
             public boolean onTouch(View view, MotionEvent event) {
 
                 final int x = (int) event.getRawX();
-                forceX = (int) event.getRawX();
+                forceLocation = (int) event.getRawX();
 
-                customCanvas.test(forceX);
-
-                //final int y = (int) event.getRawY();
+                customCanvas.setForceArrowLocation(forceLocation);
 
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
@@ -55,7 +54,6 @@ public class MainActivity extends Activity {
                                 view.getLayoutParams();
 
                         xDelta = x - lParams.leftMargin;
-                        //yDelta = y - lParams.topMargin;
                         break;
 
                     case MotionEvent.ACTION_UP:
@@ -65,7 +63,6 @@ public class MainActivity extends Activity {
                         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view
                                 .getLayoutParams();
                         layoutParams.leftMargin = x - xDelta;
-                        //layoutParams.topMargin = y - yDelta;
                         layoutParams.rightMargin = 0;
                         layoutParams.bottomMargin = 0;
                         view.setLayoutParams(layoutParams);
