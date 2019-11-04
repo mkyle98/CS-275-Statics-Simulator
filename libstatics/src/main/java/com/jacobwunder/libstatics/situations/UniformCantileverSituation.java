@@ -1,5 +1,8 @@
 package com.jacobwunder.libstatics.situations;
 
+import com.jacobwunder.libstatics.Beam;
+import com.jacobwunder.libstatics.Force;
+
 public class UniformCantileverSituation extends SimulatorSituation {
 
     public static String situationName = "UniformCantilever";
