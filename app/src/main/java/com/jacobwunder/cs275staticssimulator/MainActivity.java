@@ -2,6 +2,7 @@ package com.jacobwunder.cs275staticssimulator;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.jacobwunder.cs275staticssimulator.threading.SimulatorClient;
@@ -33,7 +34,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mSimulatorClient = new SimulatorClient();
-        System.out.println("Loading situation!!!!!!!");
         mSimulatorClient.sendMesage("LoadSituation", UniformCantileverSituation.situationName);
 
         mSimulatorClient.onReceiveSimulatorMessage("PI Returned", value -> {
@@ -41,11 +41,17 @@ public class MainActivity extends Activity {
             return null;
         });
 
+        mSimulatorClient.onReceiveSimulatorMessage("beam update", value -> {
+
+
+            return null;
+        });
+
         mCustomCanvas = findViewById(R.id.signature_canvas);
         mCustomCanvas.setSimulatorClient(mSimulatorClient);
-        mCustomCanvas = (CanvasView) findViewById(R.id.signature_canvas);
+        mCustomCanvas = findViewById(R.id.signature_canvas);
         mainLayout = (FrameLayout) findViewById(R.id.main);
-        image = (ImageView) findViewById(R.id.forceArrow);
+        image = findViewById(R.id.forceArrow);
         image.setOnTouchListener(onTouchListener());
 
         mCustomCanvas.setForceArrowAmount(forceAmount);
@@ -58,10 +64,13 @@ public class MainActivity extends Activity {
             @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View view, MotionEvent event) {
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int height = displayMetrics.heightPixels;
+                int width = displayMetrics.widthPixels;
 
-                final int x = (int) event.getRawX();
+                int x = (int) event.getRawX();
                 forceLocation = (int) event.getRawX();
-
                 mCustomCanvas.setForceArrowLocation(forceLocation);
 
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
@@ -74,6 +83,10 @@ public class MainActivity extends Activity {
                         break;
 
                     case MotionEvent.ACTION_UP:
+                        mSimulatorClient.sendMesage(
+                            "force location update",
+                            (double) forceLocation / width
+                        );
                         break;
 
                     case MotionEvent.ACTION_MOVE:
@@ -87,6 +100,7 @@ public class MainActivity extends Activity {
                 }
 
                 mainLayout.invalidate();
+                mCustomCanvas.invalidate();
                 return true;
             }
         };
@@ -97,9 +111,4 @@ public class MainActivity extends Activity {
         super.onDestroy();
         mSimulatorClient.onDestroy();
     }
-
-    public void clearCanvas(View v) {
-        mCustomCanvas.clearCanvas();
-    }
-
 }

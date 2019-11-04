@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 public class Beam {
 
-    private static int POINT_COUNT = 20;
+    public static int POINT_COUNT = 20;
 
     private Point[] mesh;
     private double length;

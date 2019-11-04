@@ -11,17 +11,9 @@ public class UniformCantileverSituation extends SimulatorSituation {
 
     @Override
     public void handleUpdate(String name, Object rcv_value) {
-        if (name.equals("PI TIME")) {
-            float value = (float) rcv_value;
-            System.out.println("PI TIME!!!!! got value: " + value);
-
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                System.out.println("lmao alright");
-            }
-
-            sendMessage("PI Returned", value);
+        if (name.equals("force location update")) {
+            double value = (double) rcv_value;
+            System.out.println("force location update!!!!! got value: " + value);
         }
     }
 }
