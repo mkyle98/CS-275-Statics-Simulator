@@ -5,9 +5,11 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
 
+import com.jacobwunder.libstatics.UpdatePayload;
 import com.jacobwunder.libstatics.situations.SimulatorSituation;
+import com.jacobwunder.libstatics.situations.UniformCantileverSituation;
 
-public class SimulatorHandlerThread<T> extends HandlerThread {
+public class SimulatorHandlerThread extends HandlerThread {
 
     private static final String TAG = "SimulatorHandlerThread";
     public static final int MESSAGE_ID = 0;
@@ -21,11 +23,6 @@ public class SimulatorHandlerThread<T> extends HandlerThread {
         mResponseHandler = responseHandler;
     }
 
-    public void queueMessage(T target) {
-        Log.i(TAG, "queueMessage " + (String) target);
-        mRequestHandler.obtainMessage(MESSAGE_ID, target).sendToTarget();
-    }
-
     @Override
     protected void onLooperPrepared() {
         mRequestHandler = new RequestHandler();
@@ -35,19 +32,38 @@ public class SimulatorHandlerThread<T> extends HandlerThread {
         mRequestHandler.removeMessages(MESSAGE_ID);
     }
 
-    private void handleRequest(final T target) {
-        Log.i(TAG, "process request " + (String) target);
-        String s = (String) target;
-        mResponseHandler.obtainMessage(MESSAGE_ID, s).sendToTarget();
+    private void handleRequest(final UpdatePayload payload) {
+
+        Log.i(TAG, "handling request (backend): " + payload);
+
+        if (payload.type.equals("LoadSituation")) {
+            String v = (String) payload.value;
+
+            if (v.equals(UniformCantileverSituation.situationName)) {
+                situation = new UniformCantileverSituation();
+            }
+
+            situation.setSendUpdateCallback((x -> {
+                mResponseHandler.obtainMessage(MESSAGE_ID, x).sendToTarget();
+                return null;
+            }));
+        } else {
+            situation.handleUpdate(payload.type, payload.value);
+        }
+    }
+
+    public void createAndSendMessageToSelf(String type, Object value) {
+        UpdatePayload payload = new UpdatePayload(type, value);
+        mRequestHandler.obtainMessage(MESSAGE_ID, payload).sendToTarget();
     }
 
     private class RequestHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == MESSAGE_ID) {
-                T target = (T) msg.obj;
-                Log.i(TAG, "got a request: " + target);
-                handleRequest(target);
+                UpdatePayload payload = (UpdatePayload) msg.obj;
+                Log.i(TAG, "got a request (backend): " + payload);
+                handleRequest(payload);
             }
         }
     }

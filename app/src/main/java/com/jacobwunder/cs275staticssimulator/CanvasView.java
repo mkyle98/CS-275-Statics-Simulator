@@ -11,7 +11,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.jacobwunder.cs275staticssimulator.threading.SimulatorClient;
+
 import java.util.Arrays;
+import java.util.Random;
 
 public class CanvasView extends View {
 
@@ -32,6 +35,8 @@ public class CanvasView extends View {
     private static final int HEIGHT = 15;
     private static final int COUNT = (WIDTH) * (HEIGHT);
     private float[] mVerts = new float[COUNT*2];
+
+    private SimulatorClient mSimulatorClient;
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
@@ -62,6 +67,10 @@ public class CanvasView extends View {
 
     }
 
+    public void setSimulatorClient(SimulatorClient simulatorClient) {
+        mSimulatorClient = simulatorClient;
+    }
+
     // override onSizeChanged
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -78,9 +87,9 @@ public class CanvasView extends View {
 
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                System.out.println(i + ", " + j);
-                System.out.println(i * 2 * HEIGHT + (2 * j));
-                System.out.println(i * 2 * HEIGHT + (2 * j) + 1);
+//                System.out.println(i + ", " + j);
+//                System.out.println(i * 2 * HEIGHT + (2 * j));
+//                System.out.println(i * 2 * HEIGHT + (2 * j) + 1);
 
                 mVerts[i * 2 * HEIGHT + (2 * j)    ] = sizeX / (WIDTH - 1)  * j + minX;
                 mVerts[i * 2 * HEIGHT + (2 * j) + 1] = sizeY / (HEIGHT - 1) * i + minY;
@@ -90,7 +99,7 @@ public class CanvasView extends View {
             }
         }
 
-        System.out.println(Arrays.toString(mVerts));
+//        System.out.println(Arrays.toString(mVerts));
 
         canvas.drawBitmapMesh(
             testBitmap,
@@ -104,9 +113,14 @@ public class CanvasView extends View {
         );
     }
 
+    Random random = new Random();
     private void tick() {
         t += .5;
         t %= Math.PI * 2;
+
+        if (random.nextDouble() > 0.99) {
+            mSimulatorClient.sendMesage("PI TIME", t);
+        }
     }
 
     @Override

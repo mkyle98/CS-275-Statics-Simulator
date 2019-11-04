@@ -1,14 +1,16 @@
 package com.jacobwunder.cs275staticssimulator.threading;
 
-import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
-import com.jacobwunder.cs275staticssimulator.R;
+import com.jacobwunder.libstatics.UpdatePayload;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 public class SimulatorClient {
 
@@ -20,19 +22,28 @@ public class SimulatorClient {
     private SimulatorHandlerThread mHandlerThread;
     private Handler mResponseHandler;
 
+    private Map<String, ArrayList<Function<Object, Void>>> callbacks;
+
     public SimulatorClient() {
         mResponseHandler = new ResponseHandler();
 
+        callbacks = new HashMap<>();
+
         mHandlerThread = new SimulatorHandlerThread(mResponseHandler);
         mHandlerThread.start();
-        mHandlerThread.getLooper();
+        Looper looper = mHandlerThread.getLooper();
+    }
 
-//        mRequestButton.setOnClickListener((View v) -> {
-//            //mStopButton.setEnabled(true);
-//            ++requestNumber;
-//            String msg = String.format("message %d", requestNumber);
-//            mHandlerThread.queueMessage(msg);
-//        });
+    public void sendMesage(String type, Object value) {
+        System.out.println("sending message " + type + " " + value);
+        mHandlerThread.createAndSendMessageToSelf(type, value);
+    }
+
+    public void onReceiveSimulatorMessage(String name, Function<Object, Void> callback) {
+        ArrayList<Function<Object, Void>>
+                cbs = callbacks.getOrDefault(name, new ArrayList<>());
+        cbs.add(callback);
+        callbacks.put(name, cbs);
     }
 
     public void onDestroy() {
@@ -44,9 +55,14 @@ public class SimulatorClient {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == MESSAGE_ID) {
-                String target = (String) msg.obj;
-                Log.i(TAG, "got a response: " + target);
-//                mTextView.setText(target);
+                UpdatePayload payload = (UpdatePayload) msg.obj;
+                Log.i(TAG, "handling message (client): " + payload);
+
+                ArrayList<Function<Object, Void>>
+                        cbs = callbacks.getOrDefault(payload.type, new ArrayList<>());
+                for (Function<Object, Void> callback: cbs) {
+                    callback.apply(payload.value);
+                }
             }
         }
     }
