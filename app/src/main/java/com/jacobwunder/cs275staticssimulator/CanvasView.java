@@ -1,5 +1,6 @@
 package com.jacobwunder.cs275staticssimulator;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,7 +16,9 @@ import com.jacobwunder.cs275staticssimulator.threading.SimulatorClient;
 
 import java.util.Arrays;
 import java.util.Random;
-
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 public class CanvasView extends View {
 
     private float t;
@@ -23,6 +26,7 @@ public class CanvasView extends View {
     public int height;
     private Bitmap mBitmap;
     private Bitmap testBitmap;
+    private Bitmap arrowBitmap;
     private Canvas mCanvas;
     private Path mPath;
     Context context;
@@ -37,6 +41,8 @@ public class CanvasView extends View {
     private float[] mVerts = new float[COUNT*2];
 
     private SimulatorClient mSimulatorClient;
+    private int forceArrowLocation;
+    private int forceArrowAmount;
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
@@ -61,10 +67,9 @@ public class CanvasView extends View {
         pPaint.setStrokeJoin(Paint.Join.ROUND);
         pPaint.setStrokeWidth(15f);
 
-        //define our bitmap
+        //define beam bitmap
         testBitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.beamp);
-
     }
 
     public void setSimulatorClient(SimulatorClient simulatorClient) {
@@ -138,6 +143,9 @@ public class CanvasView extends View {
         canvas.drawPath(mPath, mPaint);
 
         drawMesh(canvas);
+        mPaint.setTextSize(50);
+        canvas.drawText("Location: "+ getForceArrowLocation(), 50, 50, mPaint);
+        canvas.drawText("Force: "+ getForceArrowAmount()+"N", 50, 150, mPaint);
 
         //DRAW POINTS--------------------------------------
         for (int i = 0; i < mVerts.length; i += 2) {
@@ -198,4 +206,13 @@ public class CanvasView extends View {
         }
         return true;
     }
+
+    public void setForceArrowLocation(int location){forceArrowLocation = location;}
+
+    public void setForceArrowAmount(int newtons){forceArrowAmount = newtons;}
+
+    public int getForceArrowLocation () { return forceArrowLocation;}
+
+    public int getForceArrowAmount () { return forceArrowAmount;}
+
 }
