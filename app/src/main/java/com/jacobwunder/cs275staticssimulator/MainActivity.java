@@ -6,6 +6,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.jacobwunder.cs275staticssimulator.threading.SimulatorClient;
+import com.jacobwunder.libstatics.situations.SinglePointCantileverSituation;
 import com.jacobwunder.libstatics.situations.UniformCantileverSituation;
 
 
@@ -34,19 +35,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mSimulatorClient = new SimulatorClient();
-        mSimulatorClient.sendMesage("LoadSituation", UniformCantileverSituation.situationName);
-
-        mSimulatorClient.onReceiveSimulatorMessage("PI Returned", value -> {
-            System.out.println("Getting the pi returned" + (float) value);
-            return null;
-        });
-
-        mSimulatorClient.onReceiveSimulatorMessage("beam update", value -> {
-
-
-            return null;
-        });
-
         mCustomCanvas = findViewById(R.id.signature_canvas);
         mCustomCanvas.setSimulatorClient(mSimulatorClient);
         mCustomCanvas = findViewById(R.id.signature_canvas);
@@ -56,6 +44,9 @@ public class MainActivity extends Activity {
 
         mCustomCanvas.setForceArrowAmount(forceAmount);
         mCustomCanvas.setForceArrowLocation(forceLocation);
+
+        mSimulatorClient.sendMesage("LoadSituation", SinglePointCantileverSituation.situationName);
+        mSimulatorClient.onReceiveSimulatorMessage("beam update", value -> null);
     }
 
     private OnTouchListener onTouchListener() {

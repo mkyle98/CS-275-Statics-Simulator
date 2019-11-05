@@ -13,7 +13,7 @@ public class StaticsEngineMain {
         Force force = new Force(20, 0 , point);
         SinglePointCantileverSituation situation = new SinglePointCantileverSituation();
         System.out.println(beam.getMesh());
-        situation.updateParameters(beam, force);
+//        situation.updateParameters(beam, force);
         System.out.println(beam.getMesh());
 
 //

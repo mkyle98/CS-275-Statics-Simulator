@@ -15,7 +15,7 @@ public abstract class SimulatorSituation {
 
     abstract public void simulate();
 
-    public abstract void handleUpdate(String type, Object value);
+    public abstract void handleUpdate(String type, Object rcv_value);
 
     protected void sendMessage(String type, Object value) {
         sendUpdateCallback.apply(new UpdatePayload(type, value));

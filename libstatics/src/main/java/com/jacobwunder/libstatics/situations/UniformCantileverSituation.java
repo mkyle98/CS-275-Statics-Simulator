@@ -13,10 +13,7 @@ public class UniformCantileverSituation extends SimulatorSituation {
     }
 
     @Override
-    public void handleUpdate(String name, Object rcv_value) {
-        if (name.equals("force location update")) {
-            double value = (double) rcv_value;
-            System.out.println("force location update!!!!! got value: " + value);
-        }
+    public void handleUpdate(String type, Object rcv_value) {
+
     }
 }

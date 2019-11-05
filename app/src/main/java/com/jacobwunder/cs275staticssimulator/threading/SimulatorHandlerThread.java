@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.jacobwunder.libstatics.UpdatePayload;
 import com.jacobwunder.libstatics.situations.SimulatorSituation;
+import com.jacobwunder.libstatics.situations.SinglePointCantileverSituation;
 import com.jacobwunder.libstatics.situations.UniformCantileverSituation;
 
 public class SimulatorHandlerThread extends HandlerThread {
@@ -43,6 +44,10 @@ public class SimulatorHandlerThread extends HandlerThread {
                 situation = new UniformCantileverSituation();
             }
 
+            if (v.equals(SinglePointCantileverSituation.situationName)) {
+                situation = new SinglePointCantileverSituation();
+            }
+
             situation.setSendUpdateCallback((x -> {
                 mResponseHandler.obtainMessage(MESSAGE_ID, x).sendToTarget();
                 return null;
@@ -54,6 +59,8 @@ public class SimulatorHandlerThread extends HandlerThread {
 
     public void createAndSendMessageToSelf(String type, Object value) {
         UpdatePayload payload = new UpdatePayload(type, value);
+        System.out.println("HELLOOOO" + payload);
+        System.out.println("mRequestHandler: " + mRequestHandler);
         mRequestHandler.obtainMessage(MESSAGE_ID, payload).sendToTarget();
     }
 

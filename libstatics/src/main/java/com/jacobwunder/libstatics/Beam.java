@@ -1,5 +1,6 @@
 package com.jacobwunder.libstatics;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 public class Beam {
@@ -31,6 +32,13 @@ public class Beam {
         }
     }
 
+    public Beam(Beam other) {
+        this.mesh = Arrays.copyOf(other.mesh, other.mesh.length);
+        this.length = other.length;
+        this.elasticity = other.elasticity;
+        this.inertia = other.inertia;
+    }
+
     public Point[] getMesh() {
         return mesh;
     }
@@ -51,5 +59,15 @@ public class Beam {
         for (Point p : mesh) {
             fn.apply(p);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Beam{" +
+                "mesh=" + Arrays.toString(mesh) +
+                ", length=" + length +
+                ", elasticity=" + elasticity +
+                ", inertia=" + inertia +
+                '}';
     }
 }

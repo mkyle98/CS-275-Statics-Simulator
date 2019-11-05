@@ -8,33 +8,44 @@ import com.jacobwunder.libstatics.Point;
 import java.util.function.Function;
 
 public class SinglePointCantileverSituation extends SimulatorSituation {
+
+    public static String situationName = "SinglePointCantilever";
+
+    Beam beam = new Beam(Beam.Material.Default, 20);
+    Point forceLocation = new Point(beam.getLength(), 0, 0);
+    Force force = new Force(5, 0 , forceLocation);
+
     @Override
     public void simulate() {
 
     }
 
     @Override
-    public Beam updateParameters(Beam beam, Force force){
-        double angle = simulateAngle(beam, force);
-        final double elastic = simulateElastic(beam, force);
+    public void handleUpdate(String type, Object rcv_value) {
 
-        beam.meshApply(new Function<Point, Void>() {
-            @Override
-            public Void apply(Point point) {
-                point.setY(-elastic);
+        if (type.equals("force location update")) {
+            double value = (double) rcv_value;
+            System.out.println("force location update!!!!! got value: " + value);
+
+            forceLocation.setX(value * beam.getLength());
+            System.out.println(force.getLocation());
+            beam.meshApply(poi -> {
+                poi.setY(simulateElastic(beam, force, poi.getX()));
                 return null;
-            }
-        });
+            });
 
-        return beam;
+            System.out.println("Beam after calulations!" + beam);
+
+            sendMessage("beam update", new Beam(beam));
+        }
     }
 
-    private static double simulateElastic(Beam beam, Force force) {
-        return simulateElastic(force.getMagnitude(), beam.getLength(), beam.getElasticity(), beam.getInertia(), force.getLocation().getX());
+    private static double simulateElastic(Beam beam, Force force, double poi) {
+        return simulateElastic(force.getMagnitude(), beam.getLength(), beam.getElasticity(), beam.getInertia(), poi);
     }
 
-    private static double simulateAngle(Beam beam, Force force) {
-        return simulateAngle(force.getMagnitude(), beam.getLength(), beam.getElasticity(), beam.getInertia(), force.getLocation().getX());
+    private static double simulateAngle(Beam beam, Force force, double poi) {
+        return simulateAngle(force.getMagnitude(), beam.getLength(), beam.getElasticity(), beam.getInertia(), poi);
     }
 
     private static double simulateElastic(double force, double length, double elasticity, double inertia, double poi) {

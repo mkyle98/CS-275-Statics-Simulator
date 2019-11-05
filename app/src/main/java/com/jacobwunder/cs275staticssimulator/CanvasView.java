@@ -66,8 +66,11 @@ public class CanvasView extends View {
                 mBitmapVerts[i * 2 * HEIGHT + (2 * j)    ] = sizeX / (WIDTH - 1)  * j + minX;
                 mBitmapVerts[i * 2 * HEIGHT + (2 * j) + 1] = sizeY / (HEIGHT - 1) * i + minY;
 
-                mBitmapVerts[i * 2 * HEIGHT + (2 * j) + 1] +=
-                    Math.sin((float) j / (float) WIDTH * 2 * Math.PI) * 100;
+                if (mBeamMesh != null) {
+//                    System.out.println(mBeamMesh[j]);
+                    mBitmapVerts[i * 2 * HEIGHT + (2 * j)    ] += mBeamMesh[j].getX();
+                    mBitmapVerts[i * 2 * HEIGHT + (2 * j) + 1] += mBeamMesh[j].getY();
+                }
             }
         }
 
