@@ -6,8 +6,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.jacobwunder.cs275staticssimulator.threading.SimulatorClient;
-import com.jacobwunder.libstatics.situations.SinglePointCantileverSituation;
-import com.jacobwunder.libstatics.situations.UniformCantileverSituation;
+import com.jacobwunder.libstatics.situations.EndLoadedCantileverSituation;
 
 
 import android.annotation.SuppressLint;
@@ -45,7 +44,7 @@ public class MainActivity extends Activity {
         mCustomCanvas.setForceArrowAmount(forceAmount);
         mCustomCanvas.setForceArrowLocation(forceLocation);
 
-        mSimulatorClient.sendMesage("LoadSituation", SinglePointCantileverSituation.situationName);
+        mSimulatorClient.sendMesage("LoadSituation", EndLoadedCantileverSituation.situationName);
         mSimulatorClient.onReceiveSimulatorMessage("beam update", value -> null);
     }
 

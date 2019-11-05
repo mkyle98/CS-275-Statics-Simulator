@@ -1,8 +1,6 @@
 package com.jacobwunder.libstatics;
 
-import java.util.function.Function;
-
-import com.jacobwunder.libstatics.situations.SinglePointCantileverSituation;
+import com.jacobwunder.libstatics.situations.EndLoadedCantileverSituation;
 
 public class StaticsEngineMain {
 
@@ -11,7 +9,7 @@ public class StaticsEngineMain {
         Beam beam = new Beam(Beam.Material.Default, 20);
         Point point = new Point(15, 0, 0);
         Force force = new Force(20, 0 , point);
-        SinglePointCantileverSituation situation = new SinglePointCantileverSituation();
+        EndLoadedCantileverSituation situation = new EndLoadedCantileverSituation();
         System.out.println(beam.getMesh());
 //        situation.updateParameters(beam, force);
         System.out.println(beam.getMesh());

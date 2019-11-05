@@ -58,7 +58,7 @@ public class CanvasView extends View {
         float minX = 40;
         float minY = 800;
         float sizeX = 1000;
-        float sizeY = 400;
+        float sizeY = 100;
 
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {

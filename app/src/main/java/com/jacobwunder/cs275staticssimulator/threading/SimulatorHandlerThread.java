@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.jacobwunder.libstatics.UpdatePayload;
 import com.jacobwunder.libstatics.situations.SimulatorSituation;
-import com.jacobwunder.libstatics.situations.SinglePointCantileverSituation;
+import com.jacobwunder.libstatics.situations.EndLoadedCantileverSituation;
 import com.jacobwunder.libstatics.situations.UniformCantileverSituation;
 
 public class SimulatorHandlerThread extends HandlerThread {
@@ -22,10 +22,6 @@ public class SimulatorHandlerThread extends HandlerThread {
     public SimulatorHandlerThread(Handler responseHandler) {
         super(TAG);
         mResponseHandler = responseHandler;
-    }
-
-    @Override
-    protected void onLooperPrepared() {
         mRequestHandler = new RequestHandler();
     }
 
@@ -44,8 +40,8 @@ public class SimulatorHandlerThread extends HandlerThread {
                 situation = new UniformCantileverSituation();
             }
 
-            if (v.equals(SinglePointCantileverSituation.situationName)) {
-                situation = new SinglePointCantileverSituation();
+            if (v.equals(EndLoadedCantileverSituation.situationName)) {
+                situation = new EndLoadedCantileverSituation();
             }
 
             situation.setSendUpdateCallback((x -> {

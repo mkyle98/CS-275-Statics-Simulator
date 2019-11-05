@@ -7,13 +7,13 @@ import com.jacobwunder.libstatics.Point;
 
 import java.util.function.Function;
 
-public class SinglePointCantileverSituation extends SimulatorSituation {
+public class EndLoadedCantileverSituation extends SimulatorSituation {
 
-    public static String situationName = "SinglePointCantilever";
+    public static String situationName = "EndLoadedCantilever";
 
     Beam beam = new Beam(Beam.Material.Default, 20);
     Point forceLocation = new Point(beam.getLength(), 0, 0);
-    Force force = new Force(5, 0 , forceLocation);
+    Force force = new Force(10, 0 , forceLocation);
 
     @Override
     public void simulate() {
@@ -35,6 +35,13 @@ public class SinglePointCantileverSituation extends SimulatorSituation {
             simulate();
 
             System.out.println("Beam after calulations!" + beam);
+            sendMessage("beam update", new Beam(beam));
+        }
+
+        if (type.equals("force magnitude change")) {
+            double value = (double) rcv_value;
+            force.setMagnitude(value);
+            simulate();
             sendMessage("beam update", new Beam(beam));
         }
     }

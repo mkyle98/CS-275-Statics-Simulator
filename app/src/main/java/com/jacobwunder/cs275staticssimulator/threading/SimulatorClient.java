@@ -31,7 +31,7 @@ public class SimulatorClient {
 
         mHandlerThread = new SimulatorHandlerThread(mResponseHandler);
         mHandlerThread.start();
-        Looper looper = mHandlerThread.getLooper();
+        mHandlerThread.getLooper();
     }
 
     public void sendMesage(String type, Object value) {
