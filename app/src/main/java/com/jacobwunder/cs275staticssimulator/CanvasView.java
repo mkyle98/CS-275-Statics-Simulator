@@ -67,7 +67,6 @@ public class CanvasView extends View {
                 mBitmapVerts[i * 2 * HEIGHT + (2 * j) + 1] = sizeY / (HEIGHT - 1) * i + minY;
 
                 if (mBeamMesh != null) {
-//                    System.out.println(mBeamMesh[j]);
                     mBitmapVerts[i * 2 * HEIGHT + (2 * j)    ] += mBeamMesh[j].getX();
                     mBitmapVerts[i * 2 * HEIGHT + (2 * j) + 1] += mBeamMesh[j].getY();
                 }
@@ -98,9 +97,6 @@ public class CanvasView extends View {
         for (int i = 0; i < mBitmapVerts.length; i += 2) {
             canvas.drawPoint(mBitmapVerts[i], mBitmapVerts[i + 1], pPaint);
         }
-
-        // Jank Refresh:
-        // invalidate();
     }
 
     public void setForceArrowLocation(int location){forceArrowLocation = location;}

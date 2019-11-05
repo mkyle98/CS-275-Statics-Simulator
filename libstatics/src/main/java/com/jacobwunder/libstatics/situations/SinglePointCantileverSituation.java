@@ -17,25 +17,24 @@ public class SinglePointCantileverSituation extends SimulatorSituation {
 
     @Override
     public void simulate() {
-
+        beam.meshApply(poi -> {
+            poi.setY(simulateElastic(beam, force, poi.getX()));
+            return null;
+        });
     }
 
     @Override
     public void handleUpdate(String type, Object rcv_value) {
-
         if (type.equals("force location update")) {
             double value = (double) rcv_value;
             System.out.println("force location update!!!!! got value: " + value);
 
             forceLocation.setX(value * beam.getLength());
             System.out.println(force.getLocation());
-            beam.meshApply(poi -> {
-                poi.setY(simulateElastic(beam, force, poi.getX()));
-                return null;
-            });
+
+            simulate();
 
             System.out.println("Beam after calulations!" + beam);
-
             sendMessage("beam update", new Beam(beam));
         }
     }
