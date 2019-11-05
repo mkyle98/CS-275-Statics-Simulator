@@ -1,10 +1,11 @@
 package com.jacobwunder.libstatics;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 public class Beam {
 
-    private static int POINT_COUNT = 20;
+    public static int POINT_COUNT = 20;
 
     private Point[] mesh;
     private double length;
@@ -27,8 +28,15 @@ public class Beam {
         }
 
         for (int i = 0; i < mesh.length; i++) {
-            mesh[i] = new Point(0.0, 0.0, length / POINT_COUNT * i);
+            mesh[i] = new Point(length / POINT_COUNT * i, 0.0, 0.0);
         }
+    }
+
+    public Beam(Beam other) {
+        this.mesh = Arrays.copyOf(other.mesh, other.mesh.length);
+        this.length = other.length;
+        this.elasticity = other.elasticity;
+        this.inertia = other.inertia;
     }
 
     public Point[] getMesh() {
@@ -51,5 +59,15 @@ public class Beam {
         for (Point p : mesh) {
             fn.apply(p);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Beam{" +
+                "mesh=" + Arrays.toString(mesh) +
+                ", length=" + length +
+                ", elasticity=" + elasticity +
+                ", inertia=" + inertia +
+                '}';
     }
 }

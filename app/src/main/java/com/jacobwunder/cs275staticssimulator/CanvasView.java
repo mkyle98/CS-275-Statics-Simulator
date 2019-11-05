@@ -4,68 +4,52 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.Arrays;
+import com.jacobwunder.cs275staticssimulator.threading.SimulatorClient;
+import com.jacobwunder.libstatics.Beam;
+import com.jacobwunder.libstatics.Point;
 
 public class CanvasView extends View {
 
-    private float t;
-    public int width;
-    public int height;
-    private Bitmap mBitmap;
-    private Bitmap testBitmap;
-    private Canvas mCanvas;
-    private Path mPath;
+    private Bitmap beamBitmap;
     Context context;
     private Paint mPaint;
     private Paint pPaint;
-    private float mX, mY;
-    private static final float TOLERANCE = 5;
 
-    private static final int WIDTH = 15;
-    private static final int HEIGHT = 15;
+
+    private static final int WIDTH = Beam.POINT_COUNT;
+    private static final int HEIGHT = Beam.POINT_COUNT;
     private static final int COUNT = (WIDTH) * (HEIGHT);
-    private float[] mVerts = new float[COUNT*2];
+    private float[] mBitmapVerts = new float[COUNT*2];
+
+    private Point[] mBeamMesh;
+
+    private SimulatorClient mSimulatorClient;
+    private int forceArrowLocation;
+    private int forceArrowAmount;
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
         context = c;
 
-        // we set a new Path
-        mPath = new Path();
-
-        // and we set a new Paint with the desired attributes
+        beamBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.beamp);
         mPaint = new Paint();
-        mPaint.setAntiAlias(true);
-        mPaint.setColor(Color.BLACK);
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeJoin(Paint.Join.ROUND);
-        mPaint.setStrokeWidth(4f);
-
-        // and we set a new Paint with the desired attributes
         pPaint = new Paint();
-        pPaint.setAntiAlias(true);
-        pPaint.setColor(Color.BLACK);
-        pPaint.setStyle(Paint.Style.STROKE);
-        pPaint.setStrokeJoin(Paint.Join.ROUND);
-        pPaint.setStrokeWidth(15f);
-
-        //define our bitmap
-        testBitmap = BitmapFactory.decodeResource(getResources(),
-                R.drawable.beamp);
-
     }
 
-    // override onSizeChanged
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+    public void setSimulatorClient(SimulatorClient simulatorClient) {
+        mSimulatorClient = simulatorClient;
+
+        mSimulatorClient.onReceiveSimulatorMessage("beam update", value -> {
+            Beam beam = (Beam) value;
+            mBeamMesh = beam.getMesh();
+
+            invalidate();
+            return null;
+        });
     }
 
     public void drawMesh(Canvas canvas) {
@@ -74,29 +58,26 @@ public class CanvasView extends View {
         float minX = 40;
         float minY = 800;
         float sizeX = 1000;
-        float sizeY = 400;
+        float sizeY = 100;
 
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                System.out.println(i + ", " + j);
-                System.out.println(i * 2 * HEIGHT + (2 * j));
-                System.out.println(i * 2 * HEIGHT + (2 * j) + 1);
 
-                mVerts[i * 2 * HEIGHT + (2 * j)    ] = sizeX / (WIDTH - 1)  * j + minX;
-                mVerts[i * 2 * HEIGHT + (2 * j) + 1] = sizeY / (HEIGHT - 1) * i + minY;
+                mBitmapVerts[i * 2 * HEIGHT + (2 * j)    ] = sizeX / (WIDTH - 1)  * j + minX;
+                mBitmapVerts[i * 2 * HEIGHT + (2 * j) + 1] = sizeY / (HEIGHT - 1) * i + minY;
 
-                mVerts[i * 2 * HEIGHT + (2 * j) + 1] +=
-                    Math.sin((float) j / (float) WIDTH * 2 * Math.PI + t) * 100;
+                if (mBeamMesh != null) {
+                    mBitmapVerts[i * 2 * HEIGHT + (2 * j)    ] += mBeamMesh[j].getX();
+                    mBitmapVerts[i * 2 * HEIGHT + (2 * j) + 1] += mBeamMesh[j].getY();
+                }
             }
         }
 
-        System.out.println(Arrays.toString(mVerts));
-
         canvas.drawBitmapMesh(
-            testBitmap,
+            beamBitmap,
             WIDTH - 1,
             HEIGHT - 1,
-            mVerts,
+            mBitmapVerts,
             0,
             null,
             0,
@@ -104,79 +85,26 @@ public class CanvasView extends View {
         );
     }
 
-    private void tick() {
-        t += .5;
-        t %= Math.PI * 2;
-    }
-
     @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        tick();
-
-        // draw the mPath with the mPaint on the canvas when onDraw
-        canvas.drawPath(mPath, mPaint);
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
 
         drawMesh(canvas);
+        mPaint.setTextSize(50);
+        canvas.drawText("Location: "+ getForceArrowLocation(), 50, 50, mPaint);
+        canvas.drawText("Force: "+ getForceArrowAmount()+"N", 50, 150, mPaint);
 
-        //DRAW POINTS--------------------------------------
-        for (int i = 0; i < mVerts.length; i += 2) {
-            canvas.drawPoint(mVerts[i], mVerts[i + 1], pPaint);
-        }
-
-        // Jank Refresh:
-        // invalidate();
-    }
-
-    // when ACTION_DOWN start touch according to the x,y values
-    private void startTouch(float x, float y) {
-        mPath.moveTo(x, y);
-        mX = x;
-        mY = y;
-    }
-
-    // when ACTION_MOVE move touch according to the x,y values
-    private void moveTouch(float x, float y) {
-        float dx = Math.abs(x - mX);
-        float dy = Math.abs(y - mY);
-        if (dx >= TOLERANCE || dy >= TOLERANCE) {
-            mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
-            mX = x;
-            mY = y;
+        for (int i = 0; i < mBitmapVerts.length; i += 2) {
+            canvas.drawPoint(mBitmapVerts[i], mBitmapVerts[i + 1], pPaint);
         }
     }
 
-    public void clearCanvas() {
-        mPath.reset();
-        invalidate();
-    }
+    public void setForceArrowLocation(int location){forceArrowLocation = location;}
 
-    // when ACTION_UP stop touch
-    private void upTouch() {
-        mPath.lineTo(mX, mY);
-    }
+    public void setForceArrowAmount(int newtons){forceArrowAmount = newtons;}
 
-    //override the onTouchEvent
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
+    public int getForceArrowLocation () { return forceArrowLocation;}
 
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                startTouch(x, y);
-                invalidate();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                moveTouch(x, y);
-                invalidate();
-                break;
-            case MotionEvent.ACTION_UP:
-                upTouch();
-                invalidate();
-                break;
-        }
-        return true;
-    }
+    public int getForceArrowAmount () { return forceArrowAmount;}
+
 }
