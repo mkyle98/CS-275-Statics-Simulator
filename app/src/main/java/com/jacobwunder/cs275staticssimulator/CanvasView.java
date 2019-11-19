@@ -31,13 +31,8 @@ public class CanvasView extends View {
     private float mX, mY;
     private static final float TOLERANCE = 5;
 
-<<<<<<< Updated upstream
     private static final int WIDTH = 15;
     private static final int HEIGHT = 15;
-=======
-    private static final int WIDTH = Beam.POINT_COUNT;
-    private static final int HEIGHT = Beam.POINT_COUNT;
->>>>>>> Stashed changes
     private static final int COUNT = (WIDTH) * (HEIGHT);
     private float[] mVerts = new float[COUNT*2];
 
@@ -61,17 +56,11 @@ public class CanvasView extends View {
 
         // and we set a new Paint with the desired attributes
         pPaint = new Paint();
-<<<<<<< Updated upstream
-=======
-        // and we set a new Paint with the desired attributes
-        pPaint = new Paint();
->>>>>>> Stashed changes
         pPaint.setAntiAlias(true);
         pPaint.setColor(Color.BLACK);
         pPaint.setStyle(Paint.Style.STROKE);
         pPaint.setStrokeJoin(Paint.Join.ROUND);
         pPaint.setStrokeWidth(15f);
-<<<<<<< Updated upstream
 
         //define beam bitmap
         testBitmap = BitmapFactory.decodeResource(getResources(),
@@ -82,25 +71,11 @@ public class CanvasView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-=======
-    }
-
-    public void setSimulatorClient(SimulatorClient simulatorClient) {
-        mSimulatorClient = simulatorClient;
-
-        mSimulatorClient.onReceiveSimulatorMessage("beam update", value -> {
-            Beam beam = (Beam) value;
-            mBeamMesh = beam.getMesh();
-            invalidate();
-            return null;
-        });
->>>>>>> Stashed changes
     }
 
     public void drawMesh(Canvas canvas) {
 
         //DEFINE VERTICES---------------------------------
-        //TODO define standard 10m long beam
         float minX = 40;
         float minY = 800;
         float sizeX = 1000;
@@ -153,7 +128,6 @@ public class CanvasView extends View {
         canvas.drawText("Location: "+ getForceArrowLocation(), 50, 50, mPaint);
         canvas.drawText("Force: "+ getForceArrowAmount()+"N", 50, 150, mPaint);
 
-<<<<<<< Updated upstream
         //DRAW POINTS--------------------------------------
         for (int i = 0; i < mVerts.length; i += 2) {
             canvas.drawPoint(mVerts[i], mVerts[i + 1], pPaint);
@@ -212,12 +186,6 @@ public class CanvasView extends View {
                 break;
         }
         return true;
-=======
-        //Draw bitmap mesh points
-        for (int i = 0; i < mBitmapVerts.length; i += 2) {
-            canvas.drawPoint(mBitmapVerts[i], mBitmapVerts[i + 1], pPaint);
-        }
->>>>>>> Stashed changes
     }
 
     public void setForceArrowLocation(int location){forceArrowLocation = location;}

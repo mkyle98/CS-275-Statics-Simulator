@@ -35,7 +35,6 @@ public class MainActivity extends Activity {
         customCanvas.setForceArrowLocation(forceLocation);
     }
 
-    //TODO create abstraction
     private OnTouchListener onTouchListener() {
         return new OnTouchListener() {
 
@@ -58,14 +57,6 @@ public class MainActivity extends Activity {
                         break;
 
                     case MotionEvent.ACTION_UP:
-<<<<<<< Updated upstream
-=======
-                        mSimulatorClient.sendMesage(
-                            "force location update",
-                            //TODO define length of beam and reference it here
-                            (double) forceLocation / width
-                        );
->>>>>>> Stashed changes
                         break;
 
                     case MotionEvent.ACTION_MOVE:
