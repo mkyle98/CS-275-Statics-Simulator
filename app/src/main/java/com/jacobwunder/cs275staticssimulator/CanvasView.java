@@ -25,7 +25,8 @@ public class CanvasView extends View {
     private static final int COUNT = (WIDTH) * (HEIGHT);
     private float[] mBitmapVerts = new float[COUNT*2];
 
-    private Point[] mBeamMesh;
+    private Point[] mBeamMeshTop;
+    private Point[] mBeamMeshBot;
 
     private SimulatorClient mSimulatorClient;
     private int forceArrowLocation;
@@ -45,7 +46,8 @@ public class CanvasView extends View {
 
         mSimulatorClient.onReceiveSimulatorMessage("beam update", value -> {
             Beam beam = (Beam) value;
-            mBeamMesh = beam.getMesh();
+            mBeamMeshTop = beam.getTopFaceMesh();
+            mBeamMeshBot = beam.getBotFaceMesh();
 
             invalidate();
             return null;
@@ -66,9 +68,23 @@ public class CanvasView extends View {
                 mBitmapVerts[i * 2 * HEIGHT + (2 * j)    ] = sizeX / (WIDTH - 1)  * j + minX;
                 mBitmapVerts[i * 2 * HEIGHT + (2 * j) + 1] = sizeY / (HEIGHT - 1) * i + minY;
 
-                if (mBeamMesh != null) {
-                    mBitmapVerts[i * 2 * HEIGHT + (2 * j)    ] += mBeamMesh[j].getX();
-                    mBitmapVerts[i * 2 * HEIGHT + (2 * j) + 1] += mBeamMesh[j].getY();
+                if (mBeamMeshTop != null) {
+                    mBitmapVerts[i * 2 * HEIGHT + (2 * j)    ] += mBeamMeshTop[j].getX();
+                    mBitmapVerts[i * 2 * HEIGHT + (2 * j) + 1] += mBeamMeshTop[j].getY();
+                }
+            }
+        }
+
+        // JACOB TODO: make this do top and bot mesh
+        for (int i = 0; i < HEIGHT; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+
+                mBitmapVerts[i * 2 * HEIGHT + (2 * j)    ] = sizeX / (WIDTH - 1)  * j + minX;
+                mBitmapVerts[i * 2 * HEIGHT + (2 * j) + 1] = sizeY / (HEIGHT - 1) * i + minY;
+
+                if (mBeamMeshTop != null) {
+                    mBitmapVerts[i * 2 * HEIGHT + (2 * j)    ] += mBeamMeshTop[j].getX();
+                    mBitmapVerts[i * 2 * HEIGHT + (2 * j) + 1] += mBeamMeshTop[j].getY();
                 }
             }
         }

@@ -5,8 +5,6 @@ import com.jacobwunder.libstatics.Beam;
 import com.jacobwunder.libstatics.Force;
 import com.jacobwunder.libstatics.Point;
 
-import java.util.function.Function;
-
 public class EndLoadedCantileverSituation extends SimulatorSituation {
 
     public static String situationName = "EndLoadedCantilever";
@@ -17,7 +15,7 @@ public class EndLoadedCantileverSituation extends SimulatorSituation {
 
     @Override
     public void simulate() {
-        beam.meshApply(poi -> {
+        beam.meshApplyTop(poi -> {
             poi.setY(simulateElastic(beam, force, poi.getX()));
             return null;
         });

@@ -10,9 +10,9 @@ public class StaticsEngineMain {
         Point point = new Point(15, 0, 0);
         Force force = new Force(20, 0 , point);
         EndLoadedCantileverSituation situation = new EndLoadedCantileverSituation();
-        System.out.println(beam.getMesh());
+        System.out.println(beam.getTopFaceMesh());
 //        situation.updateParameters(beam, force);
-        System.out.println(beam.getMesh());
+        System.out.println(beam.getTopFaceMesh());
 
 //
 //        double length = 20;
@@ -26,7 +26,7 @@ public class StaticsEngineMain {
 //
 //        final Beam beam = new Beam(Beam.Material.Default, length);
 //
-//        beam.meshApply(new Function<Point, Void>() {
+//        beam.meshApplyTop(new Function<Point, Void>() {
 //            @Override
 //            public Void apply(Point point) {
 //                double defl = simulateElastic(beam, point.getZ());
@@ -35,7 +35,7 @@ public class StaticsEngineMain {
 //            }
 //        });
 //
-//        beam.meshApply(new Function<Point, Void>() {
+//        beam.meshApplyTop(new Function<Point, Void>() {
 //            @Override
 //            public Void apply(Point point) {
 //                System.out.println(point);
