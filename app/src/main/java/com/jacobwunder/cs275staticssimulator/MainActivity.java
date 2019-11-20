@@ -1,6 +1,7 @@
 package com.jacobwunder.cs275staticssimulator;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -24,14 +25,19 @@ public class MainActivity extends Activity {
     private ViewGroup mainLayout;
     private ImageView image;
     private int xDelta;
-    private int forceLocation = 720;
+    private int forceLocation;
     private int forceAmount = 50;
+
+    static int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+    int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        forceLocation = getScreenCenter();
 
         mSimulatorClient = new SimulatorClient();
         mCustomCanvas = findViewById(R.id.signature_canvas);
@@ -48,6 +54,7 @@ public class MainActivity extends Activity {
         mSimulatorClient.onReceiveSimulatorMessage("beam update", value -> null);
     }
 
+    //Lucas TODO: create abstraction
     private OnTouchListener onTouchListener() {
         return new OnTouchListener() {
 
@@ -60,8 +67,18 @@ public class MainActivity extends Activity {
                 int width = displayMetrics.widthPixels;
 
                 int x = (int) event.getRawX();
-                forceLocation = (int) event.getRawX();
-                mCustomCanvas.setForceArrowLocation(forceLocation);
+                if(x<mCustomCanvas.getBeamX()){
+                    x = mCustomCanvas.getBeamX();
+                    forceLocation = x;
+                    mCustomCanvas.setForceArrowLocation(forceLocation);
+                } else if(x>mCustomCanvas.getBeamX() + mCustomCanvas.getBeamWidth()){
+                    x = mCustomCanvas.getBeamX() + mCustomCanvas.getBeamWidth();
+                    forceLocation = x;
+                    mCustomCanvas.setForceArrowLocation(forceLocation);
+                } else{
+                    forceLocation = x;
+                    mCustomCanvas.setForceArrowLocation(forceLocation);
+                }
 
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
@@ -73,10 +90,11 @@ public class MainActivity extends Activity {
                         break;
 
                     case MotionEvent.ACTION_UP:
-                        mSimulatorClient.sendMesage(
-                            "force location update",
-                            (double) forceLocation / width
-                        );
+                        //Commented out to stop real time updating
+//                        mSimulatorClient.sendMesage(
+//                            "force location update",
+//                            (double) forceLocation / width
+//                        );
                         break;
 
                     case MotionEvent.ACTION_MOVE:
@@ -101,4 +119,18 @@ public class MainActivity extends Activity {
         super.onDestroy();
         mSimulatorClient.onDestroy();
     }
+
+    public static int getScreenCenter(){return screenWidth/2;}
+
+    public void Calculate(View v) {
+        mSimulatorClient.sendMesage(
+                "force location update",
+                (double) mCustomCanvas.getForceArrowLocation() / mCustomCanvas.getBeamWidth()
+        );
+    }
+
+    public void Reset(View v) {
+        //Code to reset beam would go here
+    }
+
 }
