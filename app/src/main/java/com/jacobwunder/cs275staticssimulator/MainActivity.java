@@ -3,7 +3,6 @@ package com.jacobwunder.cs275staticssimulator;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.jacobwunder.cs275staticssimulator.threading.SimulatorClient;
@@ -16,28 +15,25 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
-
 
     private CanvasView mCustomCanvas;
     private SimulatorClient mSimulatorClient;
     private ViewGroup mainLayout;
     private ImageView image;
-    private int xDelta;
-    private int forceLocation;
-    private int forceAmount = 50;
+    private float xDelta;
+    private float forceLocationScreen = getScreenCenter();
 
     static int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-    int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        forceLocation = getScreenCenter();
 
         mSimulatorClient = new SimulatorClient();
         mCustomCanvas = findViewById(R.id.signature_canvas);
@@ -47,73 +43,97 @@ public class MainActivity extends Activity {
         image = findViewById(R.id.forceArrow);
         image.setOnTouchListener(onTouchListener());
 
-        mCustomCanvas.setForceArrowAmount(forceAmount);
-        mCustomCanvas.setForceArrowLocation(forceLocation);
-
         mSimulatorClient.sendMesage("LoadSituation", EndLoadedCantileverSituation.situationName);
         mSimulatorClient.onReceiveSimulatorMessage("beam update", value -> null);
+
+        System.out.println("screen center: " + getScreenCenter());
+        System.out.println("initial force location screen: " + forceLocationScreen);
+        mCustomCanvas.setForceArrowLocation(forceLocationScreen);
+        mCustomCanvas.setForceLocationOnBeam();
+        System.out.println("initial force location: " + mCustomCanvas.getForceLocationOnBeam());
+        mCustomCanvas.invalidate();
+
+        SeekBar seekBar = findViewById(R.id.seekBar);
+        seekBar.setProgress(0);
+//        seekBar.incrementProgressBy(10);
+        seekBar.setMax(200);
+        TextView seekBarValue = findViewById(R.id.seekBarValue);
+        seekBarValue.setText("Force "+ seekBar.getProgress()+ "N");
+        TextView beamLocationValue = findViewById(R.id.beamLocationValue);
+        beamLocationValue.setText("Location on Beam: " + mCustomCanvas.getForceLocationOnBeam() + "m");
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                progress = progress / 10;
+//                progress = progress * 10;
+                seekBarValue.setText("Force: " + seekBar.getProgress() +"N");
+                mCustomCanvas.setForceArrowAmount(seekBar.getProgress());
+                mCustomCanvas.invalidate();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
+
+
 
     //Lucas TODO: create abstraction
     private OnTouchListener onTouchListener() {
+
         return new OnTouchListener() {
 
             @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                DisplayMetrics displayMetrics = new DisplayMetrics();
-                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                int height = displayMetrics.heightPixels;
-                int width = displayMetrics.widthPixels;
 
-                int x = (int) event.getRawX();
-                if(x<mCustomCanvas.getBeamX()){
-                    x = mCustomCanvas.getBeamX();
-                    forceLocation = x;
-                    mCustomCanvas.setForceArrowLocation(forceLocation);
-                } else if(x>mCustomCanvas.getBeamX() + mCustomCanvas.getBeamWidth()){
-                    x = mCustomCanvas.getBeamX() + mCustomCanvas.getBeamWidth();
-                    forceLocation = x;
-                    mCustomCanvas.setForceArrowLocation(forceLocation);
-                } else{
-                    forceLocation = x;
-                    mCustomCanvas.setForceArrowLocation(forceLocation);
-                }
+                float x;
 
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
                     case MotionEvent.ACTION_DOWN:
-                        FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams)
-                                view.getLayoutParams();
-
-                        xDelta = x - lParams.leftMargin;
+                        xDelta = view.getX() - event.getRawX();
                         break;
 
                     case MotionEvent.ACTION_UP:
                         //Commented out to stop real time updating
 //                        mSimulatorClient.sendMesage(
 //                            "force location update",
-//                            (double) forceLocation / width
+//                            (double) forceLocationScreen / width
 //                        );
                         break;
 
                     case MotionEvent.ACTION_MOVE:
-                        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view
-                                .getLayoutParams();
-                        layoutParams.leftMargin = x - xDelta;
-                        layoutParams.rightMargin = 0;
-                        layoutParams.bottomMargin = 0;
-                        view.setLayoutParams(layoutParams);
+                        x = (int)event.getRawX() + xDelta;
+                        // check if the view out of screen
+                        if ((x <= mCustomCanvas.getBeamX()-image.getWidth()/2 || x >= (mCustomCanvas.getBeamX() + mCustomCanvas.getBeamWidth())-image.getWidth()/2))
+                        {
+                            break;
+                        }
+                        view.setX(x);
                         break;
-                }
 
+                    default:
+                        return false;
+                }
+                forceLocationScreen = image.getX()+image.getWidth()/2;
+                mCustomCanvas.setForceArrowLocation(forceLocationScreen);
+                TextView beamLocationValue = findViewById(R.id.beamLocationValue);
+                beamLocationValue.setText("Location on Beam: " + mCustomCanvas.getForceLocationOnBeam() + "m");
                 mainLayout.invalidate();
                 mCustomCanvas.invalidate();
                 return true;
             }
         };
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -133,4 +153,8 @@ public class MainActivity extends Activity {
         //Code to reset beam would go here
     }
 
+
 }
+
+
+
