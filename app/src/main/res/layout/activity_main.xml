@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:screenOrientation="nosensor"
     tools:context=".MainActivity">
 
     <FrameLayout
@@ -11,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
-        android:orientation="vertical" >
+        android:screenOrientation="nosensor" >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -92,12 +93,14 @@
 
         <ImageView
             android:id="@+id/forceArrow"
+            android:scaleType="fitStart"
+            android:adjustViewBounds="true"
             android:layout_width="29dp"
             android:layout_height="115dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="160dp"
             android:clickable="true"
-            android:contentDescription="TODO"
+            android:contentDescription="Force Arrow Image"
             android:src="@drawable/arrow" />
 
     </FrameLayout>
