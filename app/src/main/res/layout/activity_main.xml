@@ -19,6 +19,7 @@
             android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 app:layout_constraintBottom_toBottomOf="@+id/signature_canvas"
@@ -79,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/signature_canvas" />
+                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
             <com.jacobwunder.cs275staticssimulator.CanvasView
                 android:id="@+id/signature_canvas"
@@ -89,18 +90,43 @@
                 tools:layout_editor_absoluteX="-2dp"
                 tools:layout_editor_absoluteY="0dp" />
 
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme"
+                app:layout_constraintTop_toTopOf="@+id/signature_canvas"
+                app:menu="@menu/menu_items"
+                tools:layout_editor_absoluteX="16dp" />
+
+            <TextView
+                android:id="@+id/app_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/statics_simulator"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toTopOf="@+id/seekBar"
+                app:layout_constraintEnd_toEndOf="@+id/toolbar"
+                app:layout_constraintHorizontal_bias="0.073"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/signature_canvas" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:id="@+id/forceArrow"
-            android:scaleType="fitStart"
-            android:adjustViewBounds="true"
-            android:layout_width="29dp"
-            android:layout_height="115dp"
+            android:layout_width="20dp"
+            android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="160dp"
+            android:adjustViewBounds="true"
             android:clickable="true"
             android:contentDescription="Force Arrow Image"
+            android:scaleType="fitStart"
             android:src="@drawable/arrow" />
 
     </FrameLayout>

@@ -3,6 +3,7 @@ package com.jacobwunder.cs275staticssimulator;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 
 import com.jacobwunder.cs275staticssimulator.threading.SimulatorClient;
@@ -17,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 public class MainActivity extends Activity {
 
@@ -77,8 +79,7 @@ public class MainActivity extends Activity {
                 //progress = progress * 10;
                 seekBarValue.setText("Force: " + seekBar.getProgress() +"N");
                 mCustomCanvas.setForceArrowAmount(seekBar.getProgress());
-
-                image.setScaleY(2);
+                //image.setScaleY(+1);
                 mCustomCanvas.invalidate();
             }
 

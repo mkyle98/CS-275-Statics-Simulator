@@ -57,7 +57,7 @@ public class CanvasView extends View {
 
         //DEFINE VERTICES---------------------------------
         float minX = getBeamX();
-        float minY = 1000;
+        float minY = 800;
         float sizeX = getBeamWidth();
         float sizeY = getBeamHeight();
 
