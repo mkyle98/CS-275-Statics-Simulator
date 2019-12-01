@@ -46,16 +46,12 @@ public class MainActivity extends Activity {
         mSimulatorClient.sendMesage("LoadSituation", EndLoadedCantileverSituation.situationName);
         mSimulatorClient.onReceiveSimulatorMessage("beam update", value -> null);
 
-        System.out.println("screen center: " + getScreenCenter());
-        System.out.println("initial force location screen: " + forceLocationScreen);
         mCustomCanvas.setForceArrowLocation(forceLocationScreen);
         mCustomCanvas.setForceLocationOnBeam();
-        System.out.println("initial force location: " + mCustomCanvas.getForceLocationOnBeam());
-        mCustomCanvas.invalidate();
 
         SeekBar seekBar = findViewById(R.id.seekBar);
         seekBar.setProgress(0);
-//        seekBar.incrementProgressBy(10);
+        //seekBar.incrementProgressBy(10);
         seekBar.setMax(200);
         TextView seekBarValue = findViewById(R.id.seekBarValue);
         seekBarValue.setText("Force "+ seekBar.getProgress()+ "N");
@@ -65,26 +61,20 @@ public class MainActivity extends Activity {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                progress = progress / 10;
-//                progress = progress * 10;
+                //progress = progress / 10;
+                //progress = progress * 10;
                 seekBarValue.setText("Force: " + seekBar.getProgress() +"N");
                 mCustomCanvas.setForceArrowAmount(seekBar.getProgress());
                 mCustomCanvas.invalidate();
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
+            public void onStartTrackingTouch(SeekBar seekBar){}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
+            public void onStopTrackingTouch(SeekBar seekBar){}
         });
     }
-
-
 
     //Lucas TODO: create abstraction
     private OnTouchListener onTouchListener() {
@@ -113,7 +103,7 @@ public class MainActivity extends Activity {
 
                     case MotionEvent.ACTION_MOVE:
                         x = (int)event.getRawX() + xDelta;
-                        // check if the view out of screen
+                        // check if the arrow is off beam
                         if ((x <= mCustomCanvas.getBeamX()-image.getWidth()/2 || x >= (mCustomCanvas.getBeamX() + mCustomCanvas.getBeamWidth())-image.getWidth()/2))
                         {
                             break;

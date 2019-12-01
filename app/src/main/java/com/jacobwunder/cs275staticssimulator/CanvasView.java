@@ -7,8 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.TextView;
-
 import com.jacobwunder.cs275staticssimulator.threading.SimulatorClient;
 import com.jacobwunder.libstatics.Beam;
 import com.jacobwunder.libstatics.Point;
@@ -19,20 +17,15 @@ public class CanvasView extends View {
     Context context;
     private Paint mPaint;
     private Paint pPaint;
-
-
     private static final int WIDTH = Beam.POINT_COUNT;
     private static final int HEIGHT = Beam.POINT_COUNT;
     private static final int COUNT = (WIDTH) * (HEIGHT);
     private float[] mBitmapVerts = new float[COUNT*2];
-
     private Point[] mBeamMesh;
-
     private SimulatorClient mSimulatorClient;
-    private float forceArrowLocation;
+    private double forceArrowLocation;
     private int forceArrowAmount = getForceArrowAmount();
-    private float forceLocationOnBeam;
-
+    private double forceLocationOnBeam;
     private int beamX;
     private int beamWidth;
     private int beamHeight;
@@ -40,7 +33,6 @@ public class CanvasView extends View {
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
         context = c;
-
         beamBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.beamp);
         mPaint = new Paint();
         pPaint = new Paint();
@@ -48,7 +40,6 @@ public class CanvasView extends View {
 
     public void setSimulatorClient(SimulatorClient simulatorClient) {
         mSimulatorClient = simulatorClient;
-
         mSimulatorClient.onReceiveSimulatorMessage("beam update", value -> {
             Beam beam = (Beam) value;
             mBeamMesh = beam.getMesh();
@@ -98,15 +89,8 @@ public class CanvasView extends View {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-
         drawMesh(canvas);
         setForceLocationOnBeam();
-        //mPaint.setTextSize(50);
-        //canvas.drawText("Location on Screen: "+ (int)getForceArrowLocation(), 50, 50, mPaint);
-        //setForceLocationOnBeam();
-        //canvas.drawText("Location on Beam: "+ getForceLocationOnBeam()+"m", 50, 250, mPaint);
-        //canvas.drawText("Force: "+ getForceArrowAmount()+"N", 50, 350, mPaint);
-        //canvas.drawText("BeamX: "+ getBeamX(), 50, 450, mPaint);
 
         for (int i = 0; i < mBitmapVerts.length; i += 2) {
             canvas.drawPoint(mBitmapVerts[i], mBitmapVerts[i + 1], pPaint);
@@ -117,7 +101,7 @@ public class CanvasView extends View {
 
     public void setForceArrowAmount(int newtons){forceArrowAmount = newtons;}
 
-    public float getForceArrowLocation(){return forceArrowLocation;}
+    public double getForceArrowLocation(){return forceArrowLocation;}
 
     public int getForceArrowAmount(){return forceArrowAmount;}
 
@@ -131,7 +115,9 @@ public class CanvasView extends View {
 
     public int getBeamX(){return beamX;}
 
-    public void setForceLocationOnBeam(){forceLocationOnBeam = Math.round((getForceArrowLocation()-getBeamX())/100);}
+    public void setForceLocationOnBeam(){
+        forceLocationOnBeam = Math.floor((getForceArrowLocation()-getBeamX())) / 100;
+    }
 
-    public float getForceLocationOnBeam(){return forceLocationOnBeam;}
+    public double getForceLocationOnBeam(){return forceLocationOnBeam;}
 }
