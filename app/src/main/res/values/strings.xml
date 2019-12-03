@@ -4,7 +4,7 @@
     <string name="todo">TODO</string>
     <string name="calculate">Calculate</string>
     <string name="reset">Reset</string>
-    <string name="item1">Item1</string>
-    <string name="item2">Item2</string>
+    <string name="item1">End Loaded</string>
+    <string name="item2">Uniform</string>
     <string name="statics_simulator">Statics Simulator</string>
 </resources>

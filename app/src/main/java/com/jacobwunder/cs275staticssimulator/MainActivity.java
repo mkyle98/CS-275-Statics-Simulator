@@ -155,7 +155,7 @@ public class MainActivity extends Activity {
     }
 
     public void Reset(View v) {
-        //Code to reset beam would go here
+        this.recreate();
     }
 
 
