@@ -7,7 +7,8 @@ public class Beam {
 
     public static int POINT_COUNT = 20;
 
-    private Point[] mesh;
+    private Point[] topFaceMesh;
+    private Point[] botFaceMesh;
     private double length;
     private double elasticity;
     private double inertia;
@@ -18,7 +19,8 @@ public class Beam {
 
     public Beam(Material material, double length) {
 
-        this.mesh = new Point[POINT_COUNT];
+        this.topFaceMesh = new Point[POINT_COUNT];
+        this.botFaceMesh = new Point[POINT_COUNT];
         this.length = length;
 
         switch (material) {
@@ -27,20 +29,25 @@ public class Beam {
                 inertia = 12.3;
         }
 
-        for (int i = 0; i < mesh.length; i++) {
-            mesh[i] = new Point(length / POINT_COUNT * i, 0.0, 0.0);
+        for (int i = 0; i < topFaceMesh.length; i++) {
+            topFaceMesh[i] = new Point(length / POINT_COUNT * i, 0.0, 0.0);
         }
     }
 
     public Beam(Beam other) {
-        this.mesh = Arrays.copyOf(other.mesh, other.mesh.length);
+        this.topFaceMesh = Arrays.copyOf(other.topFaceMesh, other.topFaceMesh.length);
+        this.botFaceMesh = Arrays.copyOf(other.botFaceMesh, other.botFaceMesh.length);
         this.length = other.length;
         this.elasticity = other.elasticity;
         this.inertia = other.inertia;
     }
 
-    public Point[] getMesh() {
-        return mesh;
+    public Point[] getTopFaceMesh() {
+        return topFaceMesh;
+    }
+
+    public Point[] getBotFaceMesh() {
+        return botFaceMesh;
     }
 
     public double getLength() {
@@ -55,8 +62,14 @@ public class Beam {
         return elasticity;
     }
 
-    public void meshApply(Function<Point, Void> fn) {
-        for (Point p : mesh) {
+    public void meshApplyTop(Function<Point, Void> fn) {
+        for (Point p : topFaceMesh) {
+            fn.apply(p);
+        }
+    }
+
+    public void meshApplyBot(Function<Point, Void> fn) {
+        for (Point p : botFaceMesh) {
             fn.apply(p);
         }
     }
@@ -64,7 +77,7 @@ public class Beam {
     @Override
     public String toString() {
         return "Beam{" +
-                "mesh=" + Arrays.toString(mesh) +
+                "topFaceMesh=" + Arrays.toString(topFaceMesh) +
                 ", length=" + length +
                 ", elasticity=" + elasticity +
                 ", inertia=" + inertia +
