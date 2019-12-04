@@ -26,9 +26,7 @@ public class SimulatorClient {
 
     public SimulatorClient() {
         mResponseHandler = new ResponseHandler();
-
         callbacks = new HashMap<>();
-
         mHandlerThread = new SimulatorHandlerThread(mResponseHandler);
         mHandlerThread.start();
         mHandlerThread.getLooper();

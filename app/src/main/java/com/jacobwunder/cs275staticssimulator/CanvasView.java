@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
-
 import com.jacobwunder.cs275staticssimulator.threading.SimulatorClient;
 import com.jacobwunder.libstatics.Beam;
 import com.jacobwunder.libstatics.Point;
@@ -18,24 +17,23 @@ public class CanvasView extends View {
     Context context;
     private Paint mPaint;
     private Paint pPaint;
-
-
     private static final int WIDTH = Beam.POINT_COUNT;
     private static final int HEIGHT = Beam.POINT_COUNT;
     private static final int COUNT = (WIDTH) * (HEIGHT);
     private float[] mBitmapVerts = new float[COUNT*2];
-
     private Point[] mBeamMeshTop;
     private Point[] mBeamMeshBot;
-
     private SimulatorClient mSimulatorClient;
-    private int forceArrowLocation;
-    private int forceArrowAmount;
+    private double forceArrowLocation;
+    private int forceArrowAmount = getForceArrowAmount();
+    private double forceLocationOnBeam;
+    private int beamX;
+    private int beamWidth;
+    private int beamHeight;
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
         context = c;
-
         beamBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.beamp);
         mPaint = new Paint();
         pPaint = new Paint();
@@ -43,7 +41,6 @@ public class CanvasView extends View {
 
     public void setSimulatorClient(SimulatorClient simulatorClient) {
         mSimulatorClient = simulatorClient;
-
         mSimulatorClient.onReceiveSimulatorMessage("beam update", value -> {
             Beam beam = (Beam) value;
             mBeamMeshTop = beam.getTopFaceMesh();
@@ -56,11 +53,15 @@ public class CanvasView extends View {
 
     public void drawMesh(Canvas canvas) {
 
+        //DEFINE BEAM SIZE: setBeamSize(int width, int height) in meters
+        setBeamSize(10,1);
+        setBeamX();
+
         //DEFINE VERTICES---------------------------------
-        float minX = 40;
+        float minX = getBeamX();
         float minY = 800;
-        float sizeX = 1000;
-        float sizeY = 100;
+        float sizeX = getBeamWidth();
+        float sizeY = getBeamHeight();
 
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
@@ -104,23 +105,35 @@ public class CanvasView extends View {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-
         drawMesh(canvas);
-        mPaint.setTextSize(50);
-        canvas.drawText("Location: "+ getForceArrowLocation(), 50, 50, mPaint);
-        canvas.drawText("Force: "+ getForceArrowAmount()+"N", 50, 150, mPaint);
+        setForceLocationOnBeam();
 
         for (int i = 0; i < mBitmapVerts.length; i += 2) {
             canvas.drawPoint(mBitmapVerts[i], mBitmapVerts[i + 1], pPaint);
         }
     }
 
-    public void setForceArrowLocation(int location){forceArrowLocation = location;}
+    public void setForceArrowLocation(float location){forceArrowLocation = location;}
 
     public void setForceArrowAmount(int newtons){forceArrowAmount = newtons;}
 
-    public int getForceArrowLocation () { return forceArrowLocation;}
+    public double getForceArrowLocation(){return forceArrowLocation;}
 
-    public int getForceArrowAmount () { return forceArrowAmount;}
+    public int getForceArrowAmount(){return forceArrowAmount;}
 
+    public void setBeamSize(int width, int height){beamWidth = width; beamHeight = height;}
+
+    public int getBeamWidth(){return beamWidth*100;}
+
+    public int getBeamHeight(){return beamHeight*100;}
+
+    public void setBeamX(){beamX = MainActivity.getScreenCenter()-(getBeamWidth()/2);}
+
+    public int getBeamX(){return beamX;}
+
+    public void setForceLocationOnBeam(){
+        forceLocationOnBeam = Math.floor((getForceArrowLocation()-getBeamX())) / 100;
+    }
+
+    public double getForceLocationOnBeam(){return forceLocationOnBeam;}
 }

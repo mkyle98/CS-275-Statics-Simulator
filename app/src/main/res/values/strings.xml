@@ -2,4 +2,9 @@
     <string name="app_name">CS 275 Statics Simulator</string>
     <string name="clear_canvas">Clear Canvas</string>
     <string name="todo">TODO</string>
+    <string name="calculate">Calculate</string>
+    <string name="reset">Reset</string>
+    <string name="item1">End Loaded</string>
+    <string name="item2">Uniform</string>
+    <string name="statics_simulator">Statics Simulator</string>
 </resources>
